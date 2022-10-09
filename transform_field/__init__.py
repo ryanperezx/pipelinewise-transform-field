@@ -45,6 +45,7 @@ class TransformationTypes(Enum):
     HASH = 'HASH'
     HASH_SKIP_FIRST = 'HASH-SKIP-FIRST'
     MASK_STRING_SKIP_ENDS = 'MASK-STRING-SKIP-ENDS'
+    GPOLYLINE_DISTANCE = 'GPOLYLINE-DISTANCE'
 
 
 def float_to_decimal(value):
