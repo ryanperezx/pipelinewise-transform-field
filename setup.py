@@ -24,6 +24,8 @@ setup(name='pipelinewise-transform-field',
       install_requires=[
           'pipelinewise-singer-python==1.*',
           'dpath==2.0.*',
+          'googlemaps==4.6.*',
+          'geopy==2.2.*'
       ],
       extras_require={
           'test': [
