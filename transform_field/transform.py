@@ -191,7 +191,7 @@ def _transform_value(value: Any, trans_type: str) -> Any:
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
 
     # Transform a google polyline to distance
-    elif 'GPOLYLINE-DISTANCE':
+    elif 'GPOLYLINE-DISTANCE' in trans_type:
         if len(value) != 0:
             decoded_poly = googlemaps.convert.decode_polyline(value)
             distance = 0

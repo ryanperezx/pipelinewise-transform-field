@@ -26,6 +26,15 @@ class TestTransform(unittest.TestCase):
             hashlib.sha256("John".encode('utf-8')).hexdigest()
         )
 
+    def test_polyline(self):
+        """Test HASH transformation"""
+        polyline= r"mwu|Hgie^CAa@Mi@UQGMEA?EAEBE@EFCFAJCZ[|CANCLOfBKfAC\AJAJ??MfAGt@Gz@??GCEAMIOGWOWOIEUSSOYMGEICsAo@QIa@S]Ow@a@w@_@_@Qa@QOGQEKEIC??YdC[dCEDCFAHEVCRE\AZCj@?\DtD@x@@z@??@T?V@j@?P@t@?x@?j@?LARCb@APETEVGPEHMRMNMJQHMDE@M@M@MCMEMKQMKQO]I]G]E[A[Ac@?a@@m@Bq@@i@C_ALmAJkAXgDj@iFRaBb@yDXuBVwBf@aETiBd@iDp@{E??\iCRqAJu@|@qG@GRwAZ_CJs@VmBTkBPsA@E?A?APoAXuBVuBR_BP}AP}AFg@VsBRmBh@eFPgB?EZaDRgCDk@F{@FcAF_AHiAViEPaDDq@BWBc@PsCNaCR}CLqBJUBMBOBc@V}CZoDv@eJl@cHDO@KNgAL{@V{ABSDUJ_@FYL]Nc@Pa@NWJQNSPSXWPMXQXK\I\E\A\?X@F?\Dl@H|@TJ@P@x@XlA^f@NnBj@bBb@jBd@hAVpAZ|GnAH@HANCjH~APDl@LRDbOtCfBZVHhCl@PDxBh@|DdAfFbBrAb@pAd@t@X\NdC`AnAj@VLpAj@bChA~GvDbAh@DBtDxBrJrGl@d@b@\NJb@\pAdAvAlAb@\tBfBhAbAd@`@f@`@l@h@vAjAbA~@PNPPp@l@bA|@`Ax@BBRPv@r@jC~B^ZzAtAz@v@v@n@`A|@h@d@TRHF\Zf@`@tDbDnD~ChCzBzEdENLlAbA^ZFDVThCnBhCjBXTpA|@dAp@\TpBpAVPDBNHhCzAlAr@xBjAbFbCDBZLtDbBx@VXLVJxBx@vBv@t@T~Bt@JB`@LfD`AjCt@jCr@RFPDlDbANDdAXjCr@|Bn@xBj@hBf@vA^XHfBd@bBd@xA^l@RRFTFlCn@^JfDv@pAX??RNHHNFPHf@N~@Z`@LFD^NPHTPJFJJB@LLRTFLn@nAPd@R^HRHLHLJPNPFHFFLLJDHFHB@@@?B@FBHBRBdFt@dARb@HvB^??@D?D@B@D@B@BBD@BIxCGzBCv@@\CVAVSnEATA^UfDEREb@KnAMrAGp@??EVLFRFJD`@LdAZH?hAb@zNzFfAf@^Lh@RfA`@dCfATL`@PrHjDvEnB??M`@Q^Wd@qA~B??dAzAHNJT??]bB"
+        distance= "13.064203654600199"
+        self.assertEqual(
+            transform.do_transform({"col_1": polyline}, "col_1", "GPOLYLINE-DISTANCE"),
+            distance
+        )
+
     def test_mask_date(self):
         """Test MASK-DATE transformation"""
         self.assertEqual(
