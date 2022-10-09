@@ -6,6 +6,9 @@ from dpath.util import get as get_xpath, set as set_xpath
 from singer import get_logger
 from dateutil import parser
 
+import googlemaps.convert
+import geopy.distance
+
 LOGGER = get_logger('transform_field')
 
 
@@ -186,6 +189,21 @@ def _transform_value(value: Any, trans_type: str) -> Any:
         value_len = len(value)
         return_value = '*' * value_len if value_len <= (2 * skip_ends_n) \
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
+
+    # Transform a google polyline to distance
+    elif 'GPOLYLINE-DISTANCE':
+        if len(value) != 0:
+            decoded_poly = googlemaps.convert.decode_polyline(value)
+            distance = 0
+            for i in range(len(decoded_poly) - 1):
+                distance += geopy.distance.distance(
+                    (decoded_poly[i]['lat'], decoded_poly[i]['lng']),
+                    (decoded_poly[i + 1]['lat'], decoded_poly[i + 1]['lng'])
+                ).km
+
+            # return as string to match original field
+            # todo: can we convert this somehow?
+            return_value = str(distance)
 
     # Return the original value if cannot find transformation type
     # todo: is this the right behavior?

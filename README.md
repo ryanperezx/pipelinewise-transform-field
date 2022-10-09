@@ -62,6 +62,7 @@ The following are the transformation types supported by _pipelinewise-transform-
 * **MASK-NUMBER**: Transforms any numeric value to zero
 * **MASK-HIDDEN**: Transforms any string to 'hidden'
 * **MASK-STRING-SKIP-ENDS-n**: Transforms string input to masked version skipping first and last n characters, e.g. MASK-STRING-SKIP-ENDS-3
+* **GPOLYLINE-DISTANCE**: Transforms google polyline to a distance in kilometers
 
 _PS_: 1 =< n =< 9
 
