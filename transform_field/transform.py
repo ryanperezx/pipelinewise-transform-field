@@ -168,7 +168,7 @@ def _transform_value(value: Any, trans_type: str) -> Any:
     # Transforms string input to hash
     elif trans_type == "HASH-NORMALIZED":
         return_value = hashlib.sha256(
-            value.encode('utf-8').replace(' ', '').lower()
+            value.replace(' ', '').lower().encode('utf-8')
         ).hexdigest()
 
     # Transforms string input to hash skipping first n characters, e.g. HASH-SKIP-FIRST-2
