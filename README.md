@@ -57,6 +57,7 @@ The following are the transformation types supported by _pipelinewise-transform-
 
 * **SET-NULL**: Transforms any input to NULL
 * **HASH**: Transforms string input to hash
+* **HASH-NORAMLIZED**: Transforms string input to hash after removing spaces and converting to lower case
 * **HASH-SKIP-FIRST-n**: Transforms string input to hash skipping first n characters, e.g. HASH-SKIP-FIRST-2
 * **MASK-DATE**: Replaces the months and day parts of date columns to be always 1st of Jan
 * **MASK-NUMBER**: Transforms any numeric value to zero
