@@ -171,6 +171,12 @@ def _transform_value(value: Any, trans_type: str) -> Any:
             value.replace(' ', '').lower().encode('utf-8')
         ).hexdigest()
 
+    # Transforms string by stripping the beginning and end
+    elif 'SLICE' in trans_type:
+        start = trans_type.split('-')[1]
+        end = trans_type.split('-')[2]
+        return_value = value[int(start):-int(end)]
+
     # Transforms string input to hash skipping first n characters, e.g. HASH-SKIP-FIRST-2
     elif 'HASH-SKIP-FIRST' in trans_type:
         return_value = value[:int(trans_type[-1])] + \

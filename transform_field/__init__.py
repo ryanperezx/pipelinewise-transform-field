@@ -42,6 +42,7 @@ class TransformationTypes(Enum):
     MASK_HIDDEN = 'MASK-HIDDEN'
     MASK_DATE = 'MASK-DATE'
     MASK_NUMBER = 'MASK-NUMBER'
+    SLICE = 'SLICE'
     HASH = 'HASH'
     HASH_NORMALIZED = 'HASH-NORMALIZED'
     HASH_SKIP_FIRST = 'HASH-SKIP-FIRST'
@@ -278,7 +279,8 @@ class TransformField:
 
             if trans_type in (TransformationTypes.HASH.value, TransformationTypes.HASH_NORMALIZED.value, TransformationTypes.MASK_HIDDEN.value) or \
                     trans_type.startswith(TransformationTypes.HASH_SKIP_FIRST.value) or \
-                    trans_type.startswith(TransformationTypes.MASK_STRING_SKIP_ENDS.value):
+                    trans_type.startswith(TransformationTypes.MASK_STRING_SKIP_ENDS.value) or \
+                    trans_type.startswith(TransformationTypes.SLICE):
                 if not (field_type is not None and 'string' in field_type and not field_format):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-string field `'
