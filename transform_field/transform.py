@@ -175,7 +175,14 @@ def _transform_value(value: Any, trans_type: str) -> Any:
     elif 'SLICE' in trans_type:
         start = trans_type.split('-')[1]
         end = trans_type.split('-')[2]
-        return_value = value[int(start):-int(end)]
+        if len(start) > 0 and len(end) > 0:
+            return_value = value[int(start):-int(end)]
+        elif len(start) == 0 and len(end) > 0:
+            return_value = value[:int(end)]
+        elif len(start) > 0 and len(end) == 0:
+            return_value = value[int(start)]
+        else:
+            return_value = value
 
     # Transforms string input to hash skipping first n characters, e.g. HASH-SKIP-FIRST-2
     elif 'HASH-SKIP-FIRST' in trans_type:
