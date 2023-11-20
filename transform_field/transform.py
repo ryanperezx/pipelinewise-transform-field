@@ -4,7 +4,6 @@ import re
 from typing import Dict, Any, Optional, List
 from dpath.util import get as get_xpath, set as set_xpath
 from singer import get_logger
-from utils import datetime_to_timestamp
 from dateutil import parser
 from datetime import datetime
 import googlemaps.convert
