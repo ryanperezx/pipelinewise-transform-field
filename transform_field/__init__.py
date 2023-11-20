@@ -48,7 +48,7 @@ class TransformationTypes(Enum):
     HASH_SKIP_FIRST = 'HASH-SKIP-FIRST'
     MASK_STRING_SKIP_ENDS = 'MASK-STRING-SKIP-ENDS'
     GPOLYLINE_DISTANCE = 'GPOLYLINE-DISTANCE'
-
+    STR_DATETIME_TO_TIMESTAMP = 'STR-DATETIME-TO-TIMESTAMP'
 
 def float_to_decimal(value):
     """Walk the given data structure and turn all instances of float into
