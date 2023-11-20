@@ -4,8 +4,9 @@ import re
 from typing import Dict, Any, Optional, List
 from dpath.util import get as get_xpath, set as set_xpath
 from singer import get_logger
+from utils import datetime_to_timestamp
 from dateutil import parser
-
+from datetime import datetime
 import googlemaps.convert
 import geopy.distance
 
@@ -209,7 +210,8 @@ def _transform_value(value: Any, trans_type: str) -> Any:
         value_len = len(value)
         return_value = '*' * value_len if value_len <= (2 * skip_ends_n) \
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
-
+    elif 'STR-DATETIME-TO-TIMESTAMP' in trans_type:
+        return_value = datetime_to_timestamp(value)
     # Transform a google polyline to distance
     elif 'GPOLYLINE-DISTANCE' in trans_type:
         if len(value) != 0:
