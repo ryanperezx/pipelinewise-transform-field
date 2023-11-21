@@ -280,7 +280,8 @@ class TransformField:
             if trans_type in (TransformationTypes.HASH.value, TransformationTypes.HASH_NORMALIZED.value, TransformationTypes.MASK_HIDDEN.value) or \
                     trans_type.startswith(TransformationTypes.HASH_SKIP_FIRST.value) or \
                     trans_type.startswith(TransformationTypes.MASK_STRING_SKIP_ENDS.value) or \
-                    trans_type.startswith(TransformationTypes.SLICE.value):
+                    trans_type.startswith(TransformationTypes.SLICE.value) or \
+                    trans_type.startswith(TransformationTypes.STR_DATETIME_TO_TIMESTAMP.value):
                 if not (field_type is not None and 'string' in field_type and not field_format):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-string field `'
@@ -304,10 +305,11 @@ class TransformField:
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a numeric field '
                         f'`{field_id}` in stream `{stream_id}`')
-
-            elif trans_type == TransformationTypes.SET_NULL.value:
-                LOGGER.info('Transformation type is %s, no need to do any validation.', trans_type)
-
+            elif trans_type == TransformationTypes.STR_DATETIME_TO_TIMESTAMP.value:
+                if not (field_type is not None and 'string' in field_type):
+                    raise InvalidTransformationException(
+                        f'Cannot apply `{trans_type}` transformation type to a numeric field '
+                        f'`{field_id}` in stream `{stream_id}`')
             else:
                 raise UnsupportedTransformationTypeException(trans_type)
 
