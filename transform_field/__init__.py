@@ -299,13 +299,7 @@ class TransformField:
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-numeric field '
                         f'`{field_id}` in stream `{stream_id}`')
-
             elif trans_type == TransformationTypes.GPOLYLINE_DISTANCE.value:
-                if not (field_type is not None and 'string' in field_type):
-                    raise InvalidTransformationException(
-                        f'Cannot apply `{trans_type}` transformation type to a numeric field '
-                        f'`{field_id}` in stream `{stream_id}`')
-            elif trans_type == TransformationTypes.STR_DATETIME_TO_TIMESTAMP.value:
                 if not (field_type is not None and 'string' in field_type):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a numeric field '

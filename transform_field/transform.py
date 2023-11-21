@@ -6,6 +6,7 @@ from dpath.util import get as get_xpath, set as set_xpath
 from singer import get_logger
 from dateutil import parser
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import googlemaps.convert
 import geopy.distance
 
@@ -13,18 +14,26 @@ LOGGER = get_logger('transform_field')
 
 def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'):
     """
-    Parse string datetime to iso format timestamp. 
-    Also converts them into Europe/Amsterdam timezone which could be helpful for 
+    Parse string datetime to iso format timestamp.
+    Also converts them into Europe/Amsterdam timezone which could be helpful for
 
     Returns datetime in isoformat or the original value upon conversion failure.
     """
     try:
-        dt = parser.parse(datetime_str, default=default_timezone)
-        dt_iso_format = dt.isoformat()
-        return dt_iso_format
-    except ValueError:
-        # Handle parsing errors, e.g., if the datetime_str is not in a valid format.
+        dt = parser.parse(datetime_str)
+    except:
         return datetime_str
+    if dt.tzinfo is None:
+        return dt.isoformat()
+    else:
+        try:
+            nl_tz = ZoneInfo(default_timezone)
+            converted_dt = dt.astimezone(nl_tz)
+            dt_iso_format = converted_dt.isoformat()
+            return dt_iso_format
+        except ValueError:
+            # Handle parsing errors, e.g., if the datetime_str is not in a valid format.
+            return datetime_str
 
 def is_transform_required(record: Dict, when: Optional[List[Dict]]) -> bool:
     """

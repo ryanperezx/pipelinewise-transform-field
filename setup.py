@@ -25,7 +25,8 @@ setup(name='pipelinewise-transform-field',
           'pipelinewise-singer-python==1.*',
           'dpath==2.0.*',
           'googlemaps==4.6.*',
-          'geopy==2.2.*'
+          'geopy==2.2.*',
+          'python-dateutil==2.8.2'
       ],
       extras_require={
           'test': [
