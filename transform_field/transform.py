@@ -15,7 +15,7 @@ LOGGER = get_logger('transform_field')
 def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'):
     """
     Parse string datetime to iso format timestamp.
-    Also converts them into Europe/Amsterdam timezone which could be helpful for
+    Also converts them into Europe/Amsterdam timezone which could be helpful for reporting purposes.
 
     Returns datetime in isoformat or the original value upon conversion failure.
     """
@@ -232,7 +232,7 @@ def _transform_value(value: Any, trans_type: str) -> Any:
         value_len = len(value)
         return_value = '*' * value_len if value_len <= (2 * skip_ends_n) \
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
-    elif 'STR-DATETIME-TO-TIMESTAMP' in trans_type:
+    elif 'CONVERT-TIMEZONE-TO-NL' in trans_type:
         return_value = datetime_to_timestamp(value)
     # Transform a google polyline to distance
     elif 'GPOLYLINE-DISTANCE' in trans_type:

@@ -48,7 +48,7 @@ class TransformationTypes(Enum):
     HASH_SKIP_FIRST = 'HASH-SKIP-FIRST'
     MASK_STRING_SKIP_ENDS = 'MASK-STRING-SKIP-ENDS'
     GPOLYLINE_DISTANCE = 'GPOLYLINE-DISTANCE'
-    STR_DATETIME_TO_TIMESTAMP = 'STR-DATETIME-TO-TIMESTAMP'
+    CONVERT_TIMEZONE_TO_NL = 'CONVERT-TIMEZONE-TO-NL'
 
 def float_to_decimal(value):
     """Walk the given data structure and turn all instances of float into
@@ -280,19 +280,21 @@ class TransformField:
             if trans_type in (TransformationTypes.HASH.value, TransformationTypes.HASH_NORMALIZED.value, TransformationTypes.MASK_HIDDEN.value) or \
                     trans_type.startswith(TransformationTypes.HASH_SKIP_FIRST.value) or \
                     trans_type.startswith(TransformationTypes.MASK_STRING_SKIP_ENDS.value) or \
-                    trans_type.startswith(TransformationTypes.SLICE.value) or \
-                    trans_type.startswith(TransformationTypes.STR_DATETIME_TO_TIMESTAMP.value):
+                    trans_type.startswith(TransformationTypes.SLICE.value):
                 if not (field_type is not None and 'string' in field_type and not field_format):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-string field `'
                         f'{field_id}` in stream `{stream_id}`')
-
             elif trans_type == TransformationTypes.MASK_DATE.value:
                 if not (field_type is not None and 'string' in field_type and field_format in {'date-time', 'date'}):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-stringified date field'
                         f' `{field_id}` in stream `{stream_id}`')
-
+            elif trans_type == TransformationTypes.CONVERT_TIMEZONE_TO_NL.value:
+                if not (field_type is not None and 'timestamptz' in field_type):
+                    raise InvalidTransformationException(
+                        f'Cannot apply `{trans_type}` transformation type to a non-timestamptz field'
+                        f' `{field_id}` in stream `{stream_id}`. Current field type is {field_type}')
             elif trans_type == TransformationTypes.MASK_NUMBER.value:
                 if not (field_type is not None and (
                         'number' in field_type or 'integer' in field_type) and not field_format):
