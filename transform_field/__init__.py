@@ -291,10 +291,10 @@ class TransformField:
                         f'Cannot apply `{trans_type}` transformation type to a non-stringified date field'
                         f' `{field_id}` in stream `{stream_id}`')
             elif trans_type == TransformationTypes.CONVERT_TIMEZONE_TO_NL.value:
-                if not (field_type is not None and 'timestamptz' in field_type):
+                if not (field_type is not None and 'string' in field_type):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-timestamptz field'
-                        f' `{field_id}` in stream `{stream_id}`. Current field type is {field_type}')
+                        f' `{field_id}` in stream `{stream_id}`.')
             elif trans_type == TransformationTypes.MASK_NUMBER.value:
                 if not (field_type is not None and (
                         'number' in field_type or 'integer' in field_type) and not field_format):
