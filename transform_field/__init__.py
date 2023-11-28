@@ -26,7 +26,7 @@ DEFAULT_BATCH_DELAY_SECONDS = 300.0
 VALIDATE_RECORDS = False
 
 StreamMeta = namedtuple('StreamMeta', ['schema', 'key_properties', 'bookmark_properties'])
-TransMeta = namedtuple('TransMeta', ['field_id', 'type', 'when', 'field_paths'])
+TransMeta = namedtuple('TransMeta', ['field_id', 'type', 'when', 'field_paths', 'extra_params'])
 
 REQUIRED_CONFIG_KEYS = [
     "transformations"
@@ -98,7 +98,8 @@ class TransformField:
                 trans["field_id"],
                 trans["type"],
                 trans.get('when'),
-                trans.get('field_paths')
+                trans.get('field_paths'),
+                trans.get('extra_params')
             ))
 
     # pylint: disable=too-many-nested-blocks,too-many-branches
@@ -127,7 +128,7 @@ class TransformField:
 
                         if trans.field_id in message.record:
                             transformed = transform.do_transform(
-                                message.record, trans.field_id, trans.type, trans.when, trans.field_paths
+                                message.record, trans.field_id, trans.type, trans.when, trans.field_paths, trans.extra_params
                             )
                             message.record[trans.field_id] = transformed
 

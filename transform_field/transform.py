@@ -12,7 +12,7 @@ import geopy.distance
 
 LOGGER = get_logger('transform_field')
 
-def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'):
+def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam', source_timezone=None):
     """
     Parse string datetime to iso format timestamp.
     Also converts them into Europe/Amsterdam timezone which could be helpful for reporting purposes.
@@ -23,17 +23,19 @@ def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'
         dt = parser.parse(datetime_str)
     except:
         return datetime_str
-    if dt.tzinfo is None:
+    if dt.tzinfo is None and source_timezone is not None:
+        dt.replace(tzinfo=source_timezone)
+    elif dt.tzinfo is None:
         return dt.isoformat()
-    else:
-        try:
-            nl_tz = ZoneInfo(default_timezone)
-            converted_dt = dt.astimezone(nl_tz)
-            dt_iso_format = converted_dt.isoformat()
-            return dt_iso_format
-        except ValueError:
-            # Handle parsing errors, e.g., if the datetime_str is not in a valid format.
-            return datetime_str
+    
+    try:
+        nl_tz = ZoneInfo(default_timezone)
+        converted_dt = dt.astimezone(nl_tz)
+        dt_iso_format = converted_dt.isoformat()
+        return dt_iso_format
+    except ValueError:
+        # Handle parsing errors, e.g., if the datetime_str is not in a valid format.
+        return datetime_str
 
 def is_transform_required(record: Dict, when: Optional[List[Dict]]) -> bool:
     """
@@ -133,7 +135,8 @@ def do_transform(record: Dict,
                  field: str,
                  trans_type: str,
                  when: Optional[List[Dict]] = None,
-                 field_paths: Optional[List[str]] = None
+                 field_paths: Optional[List[str]] = None,
+                 extra_params: Optional[Dict] = None,
                  ) -> Any:
     """Transform a value by a certain transformation type.
     Optionally can set conditional criteria based on other
@@ -150,14 +153,14 @@ def do_transform(record: Dict,
                 for field_path in field_paths:
                     try:
                         field_val = get_xpath(value, field_path)
-                        set_xpath(value, field_path, _transform_value(field_val, trans_type))
+                        set_xpath(value, field_path, _transform_value(field_val, trans_type, extra_params))
                     except KeyError:
                         LOGGER.error('Field path %s does not exist', field_path)
 
                 return_value = value
 
             else:
-                return_value = _transform_value(value, trans_type)
+                return_value = _transform_value(value, trans_type, extra_params)
 
         # Return the original value if transformation is not required
         else:
@@ -170,7 +173,7 @@ def do_transform(record: Dict,
         return return_value
 
 
-def _transform_value(value: Any, trans_type: str) -> Any:
+def _transform_value(value: Any, trans_type: str, extra_params: Optional[Dict] = None) -> Any:
     """
     Applies the given transformation type to the given value
     Args:
@@ -233,7 +236,10 @@ def _transform_value(value: Any, trans_type: str) -> Any:
         return_value = '*' * value_len if value_len <= (2 * skip_ends_n) \
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
     elif 'CONVERT-TIMEZONE-TO-NL' in trans_type:
-        return_value = datetime_to_timestamp(value)
+        if extra_params is not None and 'source_timezone' in extra_params.keys():
+            return_value = datetime_to_timestamp(value, source_timezone=extra_params['source_timezone'])
+        else:
+            return_value = datetime_to_timestamp(value)
     # Transform a google polyline to distance
     elif 'GPOLYLINE-DISTANCE' in trans_type:
         if len(value) != 0:
