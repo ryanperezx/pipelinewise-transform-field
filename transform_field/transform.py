@@ -24,6 +24,13 @@ def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'
     except:
         return datetime_str
     if dt.tzinfo is None and source_timezone is not None:
+        try:
+            dt.replace(tzinfo=source_timezone)
+        # TODO: Too generic of an exception, once exceptions has been caught. Update it to be more specific
+        except Exception as ex:
+            raise Exception(ex, source_timezone)
+    elif dt.tzinfo is not None and source_timezone is not None:
+        raise Exception(f'Parsed datetime has timezone info, changing timezone via provided source_timezone may break actual value.\n Parsed tzinfo: {dt.tzinfo}\n Source timezone value: {source_timezone}')
         dt.replace(tzinfo=source_timezone)
     elif dt.tzinfo is None:
         return dt.isoformat()
@@ -31,8 +38,7 @@ def datetime_to_timestamp(datetime_str: str, default_timezone='Europe/Amsterdam'
     try:
         nl_tz = ZoneInfo(default_timezone)
         converted_dt = dt.astimezone(nl_tz)
-        dt_iso_format = converted_dt.isoformat()
-        return dt_iso_format
+        return converted_dt.isoformat()
     except ValueError:
         # Handle parsing errors, e.g., if the datetime_str is not in a valid format.
         return datetime_str
@@ -136,7 +142,7 @@ def do_transform(record: Dict,
                  trans_type: str,
                  when: Optional[List[Dict]] = None,
                  field_paths: Optional[List[str]] = None,
-                 extra_params: Optional[Dict] = None,
+                 extra_params: Optional[Dict]=None,
                  ) -> Any:
     """Transform a value by a certain transformation type.
     Optionally can set conditional criteria based on other
@@ -160,7 +166,7 @@ def do_transform(record: Dict,
                 return_value = value
 
             else:
-                return_value = _transform_value(value, trans_type, extra_params)
+                return_value = _transform_value(value, trans_type)
 
         # Return the original value if transformation is not required
         else:
@@ -173,7 +179,7 @@ def do_transform(record: Dict,
         return return_value
 
 
-def _transform_value(value: Any, trans_type: str, extra_params: Optional[Dict] = None) -> Any:
+def _transform_value(value: Any, trans_type: str, extra_params: Optional[Dict]=None) -> Any:
     """
     Applies the given transformation type to the given value
     Args:
@@ -235,7 +241,7 @@ def _transform_value(value: Any, trans_type: str, extra_params: Optional[Dict] =
         value_len = len(value)
         return_value = '*' * value_len if value_len <= (2 * skip_ends_n) \
             else f'{value[:skip_ends_n]}{"*" * (value_len - (2 * skip_ends_n))}{value[-skip_ends_n:]}'
-    elif 'CONVERT-TIMEZONE-TO-NL' in trans_type:
+    elif 'CONVERT-TIMEZONE' in trans_type:
         if extra_params is not None and 'source_timezone' in extra_params.keys():
             return_value = datetime_to_timestamp(value, source_timezone=extra_params['source_timezone'])
         else:

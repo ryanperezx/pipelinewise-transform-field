@@ -48,7 +48,7 @@ class TransformationTypes(Enum):
     HASH_SKIP_FIRST = 'HASH-SKIP-FIRST'
     MASK_STRING_SKIP_ENDS = 'MASK-STRING-SKIP-ENDS'
     GPOLYLINE_DISTANCE = 'GPOLYLINE-DISTANCE'
-    CONVERT_TIMEZONE_TO_NL = 'CONVERT-TIMEZONE-TO-NL'
+    CONVERT_TIMEZONE = 'CONVERT-TIMEZONE'
 
 def float_to_decimal(value):
     """Walk the given data structure and turn all instances of float into
@@ -291,7 +291,7 @@ class TransformField:
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-stringified date field'
                         f' `{field_id}` in stream `{stream_id}`')
-            elif trans_type == TransformationTypes.CONVERT_TIMEZONE_TO_NL.value:
+            elif trans_type == TransformationTypes.CONVERT_TIMEZONE.value:
                 if not (field_type is not None and 'string' in field_type):
                     raise InvalidTransformationException(
                         f'Cannot apply `{trans_type}` transformation type to a non-timestamptz field'
